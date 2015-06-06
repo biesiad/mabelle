@@ -6,13 +6,13 @@ app.use(express.static(__dirname + '/public'));
 
 var state = 0
 app.get('/', function(request, response) {
-  response.send(state.toString());
+  response.send("state:" + state.toString());
   state = 0
 });
 
 app.post('/', function(request, response) {
   state = 1
-  response.send(state.toString());
+  response.send("state:" + state.toString());
 });
 
 app.listen(app.get('port'), function() {
