@@ -7,7 +7,7 @@
 #define ESP_SINGLE_CONNECTION_CMD "AT+CIPMUX=0"                     // configure for single connection
 #define ESP_TCP_START_CMD "AT+CIPSTART=\"TCP\",\"10.0.0.2\",5000\r" // connect with my laptop
 #define ESP_TCP_SEND_CMD "AT+CIPSEND=18\r"                          // will send 18 bytes
-#define ESP_TCP_GET_CMD "GET / HTTP/1.0\r\n"                        // sent a GET /
+#define ESP_TCP_GET_CMD "GET /deploy HTTP/1.0\r\n"                  // sent a GET /
 
 #define LED_PIN 8
 #define BELL_PIN 9
