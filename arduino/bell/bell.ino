@@ -5,9 +5,9 @@
 #define ESP_SET_AS_CLIENT_CMD "AT+CWMODE=1\r"                       // configure as client
 #define ESP_GET_IP_CMD "AT+CIFSR\r"                                 // get ip address
 #define ESP_SINGLE_CONNECTION_CMD "AT+CIPMUX=0"                     // configure for single connection
-#define ESP_TCP_START_CMD "AT+CIPSTART=\"TCP\",\"10.0.0.2\",5000\r" // connect with my laptop
-#define ESP_TCP_SEND_CMD "AT+CIPSEND=18\r"                          // will send 18 bytes
-#define ESP_TCP_GET_CMD "GET / HTTP/1.0\r\n"                  // sent a GET /
+#define ESP_TCP_START_CMD "AT+CIPSTART=\"TCP\",\"weheartit-bell.herokuapp.com\",80\r"   // connect with service
+#define ESP_TCP_SEND_CMD "AT+CIPSEND=54\r"
+#define ESP_TCP_GET_CMD "GET / HTTP/1.1\r\nHost: weheartit-bell.herokuapp.com\r\n"        // sent a GET /
 
 #define LED_PIN 13
 #define BELL_PIN 9
@@ -44,7 +44,7 @@ void loop() {
   delay(2000);
   response = sendData(ESP_TCP_GET_CMD, 5000);
   if (response.indexOf("ERROR") != -1) return blink(BLINK_ERROR);
-  
+
   blink(BLINK_OK);
   if (response.indexOf("state:1") != -1) {
     ring();
@@ -82,7 +82,7 @@ void blink(int count) {
 
 void ring() {
   bell.write(180);
-  delay(1000);
+  delay(500);
   bell.write(0);
   delay(500);
   bell.write(90);
