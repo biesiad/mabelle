@@ -1,30 +1,32 @@
 #include <Servo.h>
-
-#define ESP_RESET_CMD "AT+RST\r"
-#define ESP_CONNECT_CMD "AT+CWJAP=\"AP Name\",\"Password\"\r"       // connect to wifi
-#define ESP_SET_AS_CLIENT_CMD "AT+CWMODE=1\r"                       // configure as client
-#define ESP_GET_IP_CMD "AT+CIFSR\r"                                 // get ip address
-#define ESP_SINGLE_CONNECTION_CMD "AT+CIPMUX=0"                     // configure for single connection
-#define ESP_TCP_START_CMD "AT+CIPSTART=\"TCP\",\"weheartit-bell.herokuapp.com\",80\r"   // connect with service
-#define ESP_TCP_SEND_CMD "AT+CIPSEND=54\r"
-#define ESP_TCP_GET_CMD "GET / HTTP/1.1\r\nHost: weheartit-bell.herokuapp.com\r\n"        // sent a GET /
+#include "wifi.h"
+#include "http.h"
 
 #define LED_PIN 13
-#define BELL_PIN 9
+#define BELL_PIN 10
 
 #define BLINK_ERROR 10
-#define BLINK_OK 3
+#define BLINK_DEPLOYED 3
+#define BLINK_NOT_DEPLOYED 1
 #define BLINK_SETUP 1
+
+String sendData(String command, const int timeout);
+void blink(int count);
+void ring(void);
 
 Servo bell;
 
 void setup() {
   Serial.begin(115700);
 
-  sendData(ESP_RESET_CMD, 3000);                                  // reset module
+  sendData(ESP_RESET_CMD, 3000);
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LOW);
+
   bell.attach(BELL_PIN);
+  bell.write(50);
+  delay(200);
+  bell.detach();
 
   delay(5000);
   blink(BLINK_SETUP);
@@ -42,15 +44,38 @@ void loop() {
   if (response.indexOf("ERROR") != -1) return blink(BLINK_ERROR);
 
   delay(2000);
-  response = sendData(ESP_TCP_GET_CMD, 5000);
+  response = sendData(ESP_TCP_CONTENT, 5000);
   if (response.indexOf("ERROR") != -1) return blink(BLINK_ERROR);
 
-  blink(BLINK_OK);
-  if (response.indexOf("state:1") != -1) {
+
+  if (response.indexOf("status:1") != -1) {
+    blink(BLINK_DEPLOYED);
     ring();
+  } else {
+    blink(BLINK_NOT_DEPLOYED);
   }
 
-  delay(8000);
+  delay(5000);
+}
+
+void blink(int count) {
+  for (int i=0; i < count; i++) {
+    digitalWrite(LED_PIN, HIGH);
+    delay(100);
+
+    digitalWrite(LED_PIN, LOW);
+    delay(100);
+  }
+}
+
+void ring() {
+  bell.attach(BELL_PIN);
+  delay(100);
+  bell.write(160);
+  delay(200);
+  bell.write(50);
+  delay(200);
+  bell.detach();
 }
 
 String sendData(String command, const int timeout) {
@@ -68,22 +93,4 @@ String sendData(String command, const int timeout) {
   }
 
   return response;
-}
-
-void blink(int count) {
-  for (int i=0; i < count; i++) {
-    digitalWrite(LED_PIN, HIGH);
-    delay(100);
-
-    digitalWrite(LED_PIN, LOW);
-    delay(100);
-  }
-}
-
-void ring() {
-  bell.write(180);
-  delay(500);
-  bell.write(0);
-  delay(500);
-  bell.write(90);
 }
