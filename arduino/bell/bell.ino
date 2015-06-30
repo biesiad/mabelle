@@ -36,11 +36,11 @@ void loop() {
   String response;
 
   delay(2000);
-  sendData(ESP_TCP_START_CMD, 1000);
+  response = sendData(ESP_TCP_START_CMD, 1000);
   if (response.indexOf("ERROR") != -1) return blink(BLINK_ERROR);
 
   delay(2000);
-  sendData(ESP_TCP_SEND_CMD, 1000);
+  response = sendData(ESP_TCP_SEND_CMD, 1000);
   if (response.indexOf("ERROR") != -1) return blink(BLINK_ERROR);
 
   delay(2000);
