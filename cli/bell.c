@@ -5,7 +5,7 @@
 #include <netinet/in.h> /* struct sockaddr_in, struct sockaddr */
 #include <netdb.h> /* struct hostent, gethostbyname */
 #include <unistd.h> /* read, write, close */
-
+#include "http.h"
 
 void error(const char *msg) { perror(msg); exit(0); }
 
@@ -13,13 +13,14 @@ int main(int argc, char *argv[])
 {
     /* first what are we going to send and where are we going to send it? */
     int port = 80;
-    char *host = "weheartit-bell.herokuapp.com";
-    char *message = "POST / HTTP/1.1\r\nHost: weheartit-bell.herokuapp.com\r\nConnection: close\r\n\r\n";
-
+    char *host = HOST;
+    char message[256];
     struct hostent *server;
     struct sockaddr_in serv_addr;
     int sockfd, bytes, sent, received, total;
     char response[256];
+
+    sprintf(message, "POST /bell HTTP/1.1\r\nHost: %s\r\nConnection: close\r\n\r\n", HOST);
 
     /* create the socket */
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -62,6 +63,9 @@ int main(int argc, char *argv[])
     } while (received < total);
 
     if (received == total) error("ERROR storing complete response from socket");
+
+    /* ring the console bell*/
+    printf("\a");
 
     /* close the socket */
     close(sockfd);

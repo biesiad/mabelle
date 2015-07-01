@@ -1,0 +1,1 @@
+#define HOST "myserver.com"
