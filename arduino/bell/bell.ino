@@ -40,7 +40,7 @@ void loop() {
   if (response.indexOf("ERROR") != -1) return blink(BLINK_ERROR);
 
   delay(2000);
-  response = sendData(ESP_TCP_SEND_CMD, 1000);
+  response = sendData(ESP_TCP_SEND_CMD, 3000);
   if (response.indexOf("ERROR") != -1) return blink(BLINK_ERROR);
 
   delay(2000);
