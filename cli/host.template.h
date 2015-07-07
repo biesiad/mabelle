@@ -1,1 +1,1 @@
-#define HOST "myserver.com"
+#define HOST "localhost"

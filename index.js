@@ -9,12 +9,12 @@ app.get('/status', function(request, response) {
 });
 
 var state = 0
-app.get('/', function(request, response) {
+app.get('/bell', function(request, response) {
   response.send("state:" + state.toString());
   state = 0
 });
 
-app.post('/', function(request, response) {
+app.post('/bell', function(request, response) {
   state = 1
   response.send("state:" + state.toString());
 });
