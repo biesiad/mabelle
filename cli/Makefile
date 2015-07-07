@@ -1,22 +1,22 @@
-CC = gcc
-CFLAGS = -Wall
-CP = cp
-RM = rm
-BUILD = build
-SRC = bell
+CC=gcc
+CFLAGS=-Wall -g
+LIBS=-lcurl
+BUILD=./build
+SRC=mabelle
 
-bell:
-	mkdir -p $(BUILD)
-	$(CC) $(CFLAGS)	-o $(BUILD)/bell $(SRC).c
+mabelle: build
+	gcc -o $(BUILD)/$(SRC) $(CFLAGS) $(LIBS) $(SRC).c
 
-all:
-	bell install
+all: mabelle
 
 install:
-	$(CP) $(BUILD)/bell /usr/local/bin
+	cp $(BUILD)/$(SRC) /usr/local/bin
+
+build:
+	mkdir build
 
 clean:
-	$(RM) -rf $(BUILD)
+	rm -rf $(BUILD)
 
 deinstall:
-	$(RM) -f /usr/local/bin/bell
+	rm -f /usr/local/bin/$(SRC)
